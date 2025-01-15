@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Painel do Usuário</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    /* RESET BÁSICO */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: url('dieselbot_background.jpg') no-repeat center center;
+      background-size: cover;
+      background-position: center 1px;
+      background-attachment: fixed;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* CABEÇALHO (header) */
+    header {
+      background-color: #111;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      color: #00ffff;
+    }
+
+    /* MENU de navegação (opcional) */
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: #00bfbf;
+    }
+
+    /* CONTEÚDO PRINCIPAL */
+    main {
+      flex: 1;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.5);
+      margin: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.8);
+    }
+
+    .welcome-box {
+      background-color: #222;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    /* TÍTULO DO USUÁRIO */
+    .welcome-box h2 {
+      margin-bottom: 15px;
+      color: #00ffff;
+      text-align: center;
+    }
+
+    /* TÍTULO "Os meus Castelos" */
+    .castelos-title {
+      color: #ccc;
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+      text-align: left; /* Alinhado à esquerda */
+    }
+
+    /* LISTA DE CASTELOS */
+    .castelos-list {
+      margin-top: 10px;
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .castelos-list li {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+    }
+
+    /*
+      BOTÃO PARA O NOME DO CASTELO, todos com o mesmo tamanho.
+      Usaremos min-width maior pra acomodar nomes extensos.
+    */
+    .castle-button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 14px;
+      background-color: #00ffff;
+      border: none;
+      border-radius: 4px;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+      min-width: 160px; /* Ajuste conforme necessário */
+    }
+
+    .castle-button:hover {
+      background-color: #00bfbf;
+    }
+
+    /* Texto do plano e dias */
+    .castle-info {
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+
+    /* BOTÃO (logout) */
+    .btn-logout {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #ff4d4d;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-logout:hover {
+      background-color: #cc0000;
+    }
+
+    /* RODAPÉ */
+    footer {
+      background-color: #111;
+      text-align: center;
+      padding: 10px;
+      color: #888;
+    }
+
+    /* Responsivo simples */
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 1.2rem;
+      }
+      nav ul {
+        flex-direction: column;
+        gap: 5px;
+      }
+      .welcome-box {
+        padding: 10px;
+      }
+      .castelos-list {
+        font-size: 0.9rem;
+      }
+      .castelos-title {
+        font-size: 1.2rem;
+      }
+      .castle-button {
+        min-width: 120px; /* reduzido no mobile */
+      }
+    }
+  </style>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      // 1. Obter username da URL (query string)
+      const params = new URLSearchParams(window.location.search);
+      const username = params.get('username');
+
+      // 2. Exibir o nome do usuário
+      const userSpan = document.getElementById('username-span');
+      if (userSpan && username) {
+        userSpan.textContent = username;
+      }
+
+      // 3. Se for "Bruno", exibimos seus castelos
+      if (username === 'Bruno') {
+        const castelos = [
+          { nome: 'bola1', plano: 'Mensal', dias: 10 },
+          { nome: 'xsultai', plano: 'Mensal', dias: 10 }
+        ];
+
+        const ul = document.getElementById('castelos-list');
+        castelos.forEach(c => {
+          // Cria <li>
+          const li = document.createElement('li');
+
+          // Botão/Link do castelo
+          const btn = document.createElement('a');
+          btn.textContent = c.nome;
+          btn.className = 'castle-button';
+          // Redireciona para castle_config.html?castle=nome
+          btn.href = `castle_config.html?castle=${encodeURIComponent(c.nome)}`;
+
+          // Texto do plano e dias
+          const infoSpan = document.createElement('span');
+          infoSpan.className = 'castle-info';
+          infoSpan.textContent = ` (Plano: ${c.plano}, ${c.dias} dias)`;
+
+          // Monta
+          li.appendChild(btn);
+          li.appendChild(infoSpan);
+
+          ul.appendChild(li);
+        });
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <!-- Cabeçalho -->
+  <header>
+    <h1>DieselBOT</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="#">Perfil</a></li>
+        <li><a href="#">Configurações</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main>
+    <div class="welcome-box">
+      <h2>Bem-vindo(a), <span id="username-span">Usuário</span>!</h2>
+
+      <div class="castelos-title">Os meus Castelos</div>
+      <ul class="castelos-list" id="castelos-list"></ul>
+
+      <!-- Botão de logout -->
+      <form action="/logout" method="POST">
+        <button type="submit" class="btn-logout">Sair</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Rodapé -->
+  <footer>
+    <p>© 2025 DieselBOT. Todos os direitos reservados.</p>
+  </footer>
+
+</body>
+</html>
